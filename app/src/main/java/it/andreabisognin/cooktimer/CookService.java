@@ -39,7 +39,7 @@ public class CookService extends Service {
     private Runnable fakeCountDownTimer = new Runnable() {
         @Override
         public void run() {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 10; i > 0; i--) {
                 update(i);
                 Log.i("BISIO","this is the number: "+i);
                 SystemClock.sleep(ONE_SECOND * 2);
@@ -48,11 +48,6 @@ public class CookService extends Service {
     };
 
 
-   /* private void update (final int value) {
-        if (callback != null) {
-            callback.setTimer(value);
-        }
-    }*/
     private void update(final int value) {
         if (activity == null || callback == null)
             return;

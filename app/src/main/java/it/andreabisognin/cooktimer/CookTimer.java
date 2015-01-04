@@ -70,6 +70,13 @@ public class CookTimer extends ActionBarActivity {
 
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        service.unregisterActivity(this);
+        unbindService(svcConn);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_cook_timer, menu);
