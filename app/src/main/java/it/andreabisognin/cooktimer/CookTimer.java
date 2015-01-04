@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -47,7 +48,7 @@ public class CookTimer extends ActionBarActivity {
         @Override
         public void setTimer(long time) {
             updateTimer(time);
-            Log.i(LOG_TAG,"got from service: '" + time + "'");
+            //Log.i(LOG_TAG,"got from service: '" + time + "'");
         }
 
         @Override
@@ -63,9 +64,18 @@ public class CookTimer extends ActionBarActivity {
 
         timerLabel = (TextView) findViewById(R.id.timer_label);
         button = (Button) findViewById(R.id.start_stop_button);
-        Log.i(LOG_TAG,"before services");
+        //Log.i(LOG_TAG,"before services");
         startService(new Intent(this,CookService.class));
         bindService(new Intent(this,CookService.class),svcConn,BIND_AUTO_CREATE);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(LOG_TAG,"trying to start the timer in service");
+                service.startTimer(10);
+
+            }
+        });
     }
 
 

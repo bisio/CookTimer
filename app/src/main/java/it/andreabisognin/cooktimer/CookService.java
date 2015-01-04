@@ -19,6 +19,7 @@ public class CookService extends Service {
     private final Binder binder = new CookBinder();
     private Activity activity;
     private ICookListenerFunctions callback;
+    private final String LOG_TAG="BISIO_SERVICE";
 
 
     @Override
@@ -30,8 +31,8 @@ public class CookService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("BISIO", "started service");
-        new Thread(fakeCountDownTimer).start();
+        Log.i(LOG_TAG, "started service");
+
     }
 
     private final long ONE_SECOND = 1000;
@@ -41,7 +42,7 @@ public class CookService extends Service {
         public void run() {
             for (int i = 10; i > 0; i--) {
                 update(i);
-                Log.i("BISIO","this is the number: "+i);
+                //Log.i(LOG_TAG,"this is the number: "+i);
                 SystemClock.sleep(ONE_SECOND * 2);
             }
         }
@@ -56,12 +57,11 @@ public class CookService extends Service {
             Handler lo = new Handler(Looper.getMainLooper());
             lo.post(new Runnable() {
                  public void run() {
-                    //Log.i("BISIO","trying to run");
                     callback.setTimer(value);
                 }
             });
         } catch (Throwable t) {
-            Log.e("BISIO", "Exception!!!" + t.getMessage());
+            Log.e(LOG_TAG, "Exception!!!" + t.getMessage());
         }
     }
 
@@ -74,9 +74,15 @@ public class CookService extends Service {
         }
 
         @Override
-        public void unregisterActivity(Activity activity) {
+        public void unregisterActivity(Activity _activity) {
             activity = null;
             callback = null;
+        }
+
+        @Override
+        public void startTimer(long seconds) {
+           new Thread(fakeCountDownTimer).start();
+           Log.i(LOG_TAG,"started Timer");
         }
     }
 }

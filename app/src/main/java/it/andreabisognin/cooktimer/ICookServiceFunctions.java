@@ -9,5 +9,5 @@ import android.app.Activity;
 public interface ICookServiceFunctions {
     void registerActivity(Activity activity, ICookListenerFunctions callback);
     void unregisterActivity(Activity activity);
-
+    void startTimer(long seconds);
 }
