@@ -41,3 +41,4 @@ project.properties
 ##Gradle-based build
 .gradle
 build/
+.gradle/2.2.1/taskArtifacts/

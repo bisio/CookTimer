@@ -20,6 +20,7 @@ public class CookService extends Service {
     private Activity activity;
     private ICookListenerFunctions callback;
     private final String LOG_TAG="BISIO_SERVICE";
+    private boolean timerRunning = false;
 
 
     @Override
@@ -45,6 +46,7 @@ public class CookService extends Service {
                 //Log.i(LOG_TAG,"this is the number: "+i);
                 SystemClock.sleep(ONE_SECOND * 2);
             }
+        timerRunning = false;
         }
     };
 
@@ -81,6 +83,9 @@ public class CookService extends Service {
 
         @Override
         public void startTimer(long seconds) {
+           if (timerRunning)
+               return;
+           timerRunning = true;
            new Thread(fakeCountDownTimer).start();
            Log.i(LOG_TAG,"started Timer");
         }
