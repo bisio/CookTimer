@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -21,6 +22,7 @@ public class CookService extends Service {
     private ICookListenerFunctions callback;
     private final String LOG_TAG="BISIO_SERVICE";
     private boolean timerRunning = false;
+    private CountDownTimer timer;
 
 
     @Override
@@ -33,23 +35,9 @@ public class CookService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.i(LOG_TAG, "started service");
-
     }
 
     private final long ONE_SECOND = 1000;
-
-    private Runnable fakeCountDownTimer = new Runnable() {
-        @Override
-        public void run() {
-            for (int i = 10; i > 0; i--) {
-                update(i);
-                //Log.i(LOG_TAG,"this is the number: "+i);
-                SystemClock.sleep(ONE_SECOND * 2);
-            }
-        timerRunning = false;
-        }
-    };
-
 
     private void update(final int value) {
         if (activity == null || callback == null)
@@ -67,7 +55,6 @@ public class CookService extends Service {
         }
     }
 
-
     public class CookBinder extends Binder implements ICookServiceFunctions {
         @Override
         public void registerActivity(Activity _activity, ICookListenerFunctions _callback) {
@@ -83,11 +70,26 @@ public class CookService extends Service {
 
         @Override
         public void startTimer(long seconds) {
-           if (timerRunning)
-               return;
-           timerRunning = true;
-           new Thread(fakeCountDownTimer).start();
-           Log.i(LOG_TAG,"started Timer");
+            if (timerRunning)
+                return;
+            timerRunning = true;
+            timer = new CountDownTimer(seconds * 1000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    if (callback != null)
+                        callback.setTimer(millisUntilFinished/1000);
+                }
+
+                @Override
+                public void onFinish() {
+                    timerRunning = false;
+                    if (callback != null)
+                        callback.onFinish();
+                }
+            };
+            timer.start();
+
+            Log.i(LOG_TAG, "started Timer");
         }
     }
 }

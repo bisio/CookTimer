@@ -39,7 +39,7 @@ public class CookTimer extends ActionBarActivity {
     };
 
     private void updateTimer (long time) {
-            timerLabel.setText(String.valueOf(time));
+            timerLabel.setText(Utility.secondsToPrettyTime(time));
     }
 
     //private final String LOG_TAG = CookTimer.class.getCanonicalName();
@@ -48,12 +48,11 @@ public class CookTimer extends ActionBarActivity {
         @Override
         public void setTimer(long time) {
             updateTimer(time);
-            //Log.i(LOG_TAG,"got from service: '" + time + "'");
         }
 
         @Override
         public void onFinish() {
-
+            timerLabel.setText(getString(R.string.done));
         }
     };
 
@@ -72,7 +71,7 @@ public class CookTimer extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Log.i(LOG_TAG,"trying to start the timer in service");
-                service.startTimer(10);
+                service.startTimer(20);
 
             }
         });
