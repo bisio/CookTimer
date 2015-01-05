@@ -21,10 +21,11 @@ public class CookTimer extends ActionBarActivity {
     private Button decTimeButton;
     private ICookServiceFunctions service = null;
     private final String TIMER_RUNNING="timer_running";
+    private final String COOK_TIME = "cook_time";
     private boolean timerRunning = false;
     private final String LOG_TAG = "BISIO";
     private final long TIME_STEP = 60;
-    private long cookTime;
+    private long cookTime=0;
 
 
     private ServiceConnection svcConn = new ServiceConnection() {
@@ -101,6 +102,7 @@ public class CookTimer extends ActionBarActivity {
 
         @Override
         public void onFinish() {
+            cookTime = 0;
             timerLabel.setText(getString(R.string.done));
             button.setText(getString(R.string.start));
             incTimeButton.setEnabled(true);
@@ -114,6 +116,8 @@ public class CookTimer extends ActionBarActivity {
         setContentView(R.layout.activity_cook_timer);
 
         timerLabel = (TextView) findViewById(R.id.timer_label);
+        if (savedInstanceState == null)
+            timerLabel.setText(Utility.secondsToPrettyTime(cookTime));
         button = (Button) findViewById(R.id.start_stop_button);
 
         incTimeButton = (Button) findViewById(R.id.increase_time_button);
@@ -130,14 +134,17 @@ public class CookTimer extends ActionBarActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         timerRunning = savedInstanceState.getBoolean(TIMER_RUNNING);
+        cookTime = savedInstanceState.getLong(COOK_TIME);
         if (timerRunning)
             button.setText(R.string.stop);
+
         super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(TIMER_RUNNING,timerRunning);
+        outState.putLong(COOK_TIME,cookTime);
         super.onSaveInstanceState(outState);
     }
 

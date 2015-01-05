@@ -36,6 +36,12 @@ public class CookService extends Service {
         Log.i(LOG_TAG, "started service");
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(LOG_TAG, "Soo Cold... Goodbye...");
+    }
+
     private final long ONE_SECOND = 1000;
 
     private void update(final int value) {
