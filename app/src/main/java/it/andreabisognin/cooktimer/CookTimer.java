@@ -135,9 +135,12 @@ public class CookTimer extends ActionBarActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         timerRunning = savedInstanceState.getBoolean(TIMER_RUNNING);
         cookTime = savedInstanceState.getLong(COOK_TIME);
-        if (timerRunning)
+        if (timerRunning) {
             button.setText(R.string.stop);
-
+            incTimeButton.setEnabled(false);
+            decTimeButton.setEnabled(false);
+        }
+        updateTimer(cookTime);
         super.onRestoreInstanceState(savedInstanceState);
     }
 
