@@ -88,7 +88,19 @@ public class CookService extends Service {
             };
             timer.start();
 
-            Log.i(LOG_TAG, "started Timer");
+            Log.i(LOG_TAG, "Started Timer in Service");
+        }
+
+        @Override
+        public void stopTimer() {
+            if (timerRunning) {
+                timer.cancel();
+                timerRunning = false;
+                Log.i(LOG_TAG, "Stopped Timer in Service");
+            } else {
+                Log.i(LOG_TAG,"Timer not running!");
+            }
+
         }
     }
 }

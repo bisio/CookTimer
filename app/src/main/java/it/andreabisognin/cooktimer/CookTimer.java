@@ -49,13 +49,21 @@ public class CookTimer extends ActionBarActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(LOG_TAG,"trying to start the timer in service");
-                timerRunning = true;
-                incTimeButton.setEnabled(false);
-                decTimeButton.setEnabled(false);
-                button.setText(getString(R.string.stop));
-                service.startTimer(cookTime);
-
+                if (timerRunning) {
+                    Log.i(LOG_TAG,"stopping the timer in service");
+                    service.stopTimer();
+                    timerRunning = false;
+                    button.setText(getString(R.string.start));
+                    incTimeButton.setEnabled(true);
+                    decTimeButton.setEnabled(true);
+                    } else {
+                    Log.i(LOG_TAG,"starting the timer in service");
+                    service.startTimer(cookTime);
+                    timerRunning = true;
+                    incTimeButton.setEnabled(false);
+                    decTimeButton.setEnabled(false);
+                    button.setText(getString(R.string.stop));
+                }
             }
         });
 
@@ -78,6 +86,7 @@ public class CookTimer extends ActionBarActivity {
     }
 
     private void updateTimer (long time) {
+            cookTime = time;
             timerLabel.setText(Utility.secondsToPrettyTime(time));
     }
 
