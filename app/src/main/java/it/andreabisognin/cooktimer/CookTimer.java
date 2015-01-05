@@ -20,6 +20,7 @@ public class CookTimer extends ActionBarActivity {
     private Button button;
     private ICookServiceFunctions service = null;
     private boolean timerRunning = false;
+    private final String LOG_TAG = "BISIO";
 
     private ServiceConnection svcConn = new ServiceConnection() {
         @Override
@@ -27,6 +28,7 @@ public class CookTimer extends ActionBarActivity {
             service = (ICookServiceFunctions) binder;
             try {
                 service.registerActivity(CookTimer.this,listener);
+                initUIHandlers();
                 Log.i(LOG_TAG,"Service Bound!");
             } catch (Throwable t) {
                 Log.e(LOG_TAG,"Could not bind service");
@@ -39,12 +41,25 @@ public class CookTimer extends ActionBarActivity {
         }
     };
 
+    private void initUIHandlers() {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(LOG_TAG,"trying to start the timer in service");
+                timerRunning = true;
+                button.setText(getString(R.string.stop));
+                service.startTimer(20);
+
+            }
+        });
+    }
+
     private void updateTimer (long time) {
             timerLabel.setText(Utility.secondsToPrettyTime(time));
     }
 
     //private final String LOG_TAG = CookTimer.class.getCanonicalName();
-    private final String LOG_TAG = "BISIO";
+
     private ICookListenerFunctions listener = new ICookListenerFunctions() {
         @Override
         public void setTimer(long time) {
@@ -66,19 +81,10 @@ public class CookTimer extends ActionBarActivity {
         timerLabel = (TextView) findViewById(R.id.timer_label);
         button = (Button) findViewById(R.id.start_stop_button);
         button.setText(getString(R.string.start));
-        startService(new Intent(this,CookService.class));
+        startService(new Intent(this, CookService.class));
         bindService(new Intent(this,CookService.class),svcConn,BIND_AUTO_CREATE);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(LOG_TAG,"trying to start the timer in service");
-                timerRunning = true;
-                button.setText(getString(R.string.stop));
-                service.startTimer(20);
 
-            }
-        });
     }
 
 
