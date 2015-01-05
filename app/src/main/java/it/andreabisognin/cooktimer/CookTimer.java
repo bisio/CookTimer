@@ -15,12 +15,16 @@ import android.widget.TextView;
 
 public class CookTimer extends ActionBarActivity {
 
-    public final int COOK_TIME = 10;
     private TextView timerLabel;
     private Button button;
+    private Button incTimeButton;
+    private Button decTimeButton;
     private ICookServiceFunctions service = null;
     private boolean timerRunning = false;
     private final String LOG_TAG = "BISIO";
+    private final long TIME_STEP = 60;
+    private long cookTime;
+
 
     private ServiceConnection svcConn = new ServiceConnection() {
         @Override
@@ -47,11 +51,30 @@ public class CookTimer extends ActionBarActivity {
             public void onClick(View v) {
                 Log.i(LOG_TAG,"trying to start the timer in service");
                 timerRunning = true;
+                incTimeButton.setEnabled(false);
+                decTimeButton.setEnabled(false);
                 button.setText(getString(R.string.stop));
-                service.startTimer(20);
+                service.startTimer(cookTime);
 
             }
         });
+
+        incTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cookTime += TIME_STEP;
+                updateTimer(cookTime);
+            }
+        });
+
+        decTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cookTime = (cookTime - TIME_STEP) > 0? cookTime -TIME_STEP : 0;
+                updateTimer(cookTime);
+            }
+        });
+
     }
 
     private void updateTimer (long time) {
@@ -70,6 +93,8 @@ public class CookTimer extends ActionBarActivity {
         public void onFinish() {
             timerLabel.setText(getString(R.string.done));
             button.setText(getString(R.string.start));
+            incTimeButton.setEnabled(true);
+            decTimeButton.setEnabled(true);
         }
     };
 
@@ -81,6 +106,8 @@ public class CookTimer extends ActionBarActivity {
         timerLabel = (TextView) findViewById(R.id.timer_label);
         button = (Button) findViewById(R.id.start_stop_button);
         button.setText(getString(R.string.start));
+        incTimeButton = (Button) findViewById(R.id.increase_time_button);
+        decTimeButton = (Button) findViewById(R.id.decrease_time_button);
         startService(new Intent(this, CookService.class));
         bindService(new Intent(this,CookService.class),svcConn,BIND_AUTO_CREATE);
 

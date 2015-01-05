@@ -23,11 +23,13 @@
         android:orientation="horizontal"
         android:layout_gravity="center">
         <Button
+            android:id="@+id/decrease_time_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
             android:text="-"/>
         <Button
+            android:id="@+id/increase_time_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
