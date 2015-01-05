@@ -114,13 +114,16 @@ public class CookTimer extends ActionBarActivity {
 
         timerLabel = (TextView) findViewById(R.id.timer_label);
         button = (Button) findViewById(R.id.start_stop_button);
-        button.setText(getString(R.string.start));
+
         incTimeButton = (Button) findViewById(R.id.increase_time_button);
         decTimeButton = (Button) findViewById(R.id.decrease_time_button);
+        if (timerRunning) {
+            button.setText(getString(R.string.stop));
+        } else {
+            button.setText(getString(R.string.start));
+        }
         startService(new Intent(this, CookService.class));
         bindService(new Intent(this,CookService.class),svcConn,BIND_AUTO_CREATE);
-
-
     }
 
 
