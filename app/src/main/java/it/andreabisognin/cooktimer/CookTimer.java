@@ -20,6 +20,7 @@ public class CookTimer extends ActionBarActivity {
     private Button incTimeButton;
     private Button decTimeButton;
     private ICookServiceFunctions service = null;
+    private final String TIMER_RUNNING="timer_running";
     private boolean timerRunning = false;
     private final String LOG_TAG = "BISIO";
     private final long TIME_STEP = 60;
@@ -126,12 +127,26 @@ public class CookTimer extends ActionBarActivity {
         bindService(new Intent(this,CookService.class),svcConn,BIND_AUTO_CREATE);
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        timerRunning = savedInstanceState.getBoolean(TIMER_RUNNING);
+        if (timerRunning)
+            button.setText(R.string.stop);
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(TIMER_RUNNING,timerRunning);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         service.unregisterActivity(this);
         unbindService(svcConn);
+        Log.i(LOG_TAG,"Service unbound");
     }
 
     @Override
