@@ -19,6 +19,7 @@ public class CookTimer extends ActionBarActivity {
     private TextView timerLabel;
     private Button button;
     private ICookServiceFunctions service = null;
+    private boolean timerRunning = false;
 
     private ServiceConnection svcConn = new ServiceConnection() {
         @Override
@@ -53,6 +54,7 @@ public class CookTimer extends ActionBarActivity {
         @Override
         public void onFinish() {
             timerLabel.setText(getString(R.string.done));
+            button.setText(getString(R.string.start));
         }
     };
 
@@ -63,7 +65,7 @@ public class CookTimer extends ActionBarActivity {
 
         timerLabel = (TextView) findViewById(R.id.timer_label);
         button = (Button) findViewById(R.id.start_stop_button);
-        //Log.i(LOG_TAG,"before services");
+        button.setText(getString(R.string.start));
         startService(new Intent(this,CookService.class));
         bindService(new Intent(this,CookService.class),svcConn,BIND_AUTO_CREATE);
 
@@ -71,6 +73,8 @@ public class CookTimer extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Log.i(LOG_TAG,"trying to start the timer in service");
+                timerRunning = true;
+                button.setText(getString(R.string.stop));
                 service.startTimer(20);
 
             }
