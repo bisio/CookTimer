@@ -25,7 +25,7 @@ public class CookTimer extends ActionBarActivity {
     private final String COOK_TIME = "cook_time";
     private boolean timerRunning = false;
     private final String LOG_TAG = "BISIO";
-    private final long TIME_STEP = 60;
+    private final long TIME_STEP = 10;
     private long cookTime=0;
     private long lastSetTime=0;
 
@@ -81,6 +81,14 @@ public class CookTimer extends ActionBarActivity {
             public void onClick(View v) {
                 cookTime = (cookTime - TIME_STEP) > 0? cookTime -TIME_STEP : 0;
                 updateTimer(cookTime);
+            }
+        });
+
+        timerLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(LOG_TAG,"clicked timerLabel!");
+                service.stopAlarm();
             }
         });
 

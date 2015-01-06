@@ -12,4 +12,5 @@ public interface ICookServiceFunctions {
     void startTimer(long seconds);
     void stopTimer();
     void startAlarm();
+    void stopAlarm();
 }

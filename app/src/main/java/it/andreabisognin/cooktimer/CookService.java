@@ -116,5 +116,12 @@ public class CookService extends Service {
             mp = MediaPlayer.create(getApplicationContext(),R.raw.alarm);
             mp.start();
         }
+
+        @Override
+        public void stopAlarm() {
+            if (mp != null)
+                mp.stop();
+            mp = null;
+        }
     }
 }
