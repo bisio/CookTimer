@@ -19,6 +19,7 @@ public class CookTimer extends ActionBarActivity {
     private Button button;
     private Button incTimeButton;
     private Button decTimeButton;
+    private Button resetButton;
     private ICookServiceFunctions service = null;
     private final String TIMER_RUNNING="timer_running";
     private final String COOK_TIME = "cook_time";
@@ -26,6 +27,7 @@ public class CookTimer extends ActionBarActivity {
     private final String LOG_TAG = "BISIO";
     private final long TIME_STEP = 60;
     private long cookTime=0;
+    private long lastSetTime=0;
 
 
     private ServiceConnection svcConn = new ServiceConnection() {
@@ -58,6 +60,7 @@ public class CookTimer extends ActionBarActivity {
                     button.setText(getString(R.string.start));
                     incTimeButton.setEnabled(true);
                     decTimeButton.setEnabled(true);
+                    resetButton.setEnabled(true);
                     } else {
                     Log.i(LOG_TAG,"starting the timer in service");
                     service.startTimer(cookTime);
@@ -65,7 +68,15 @@ public class CookTimer extends ActionBarActivity {
                     incTimeButton.setEnabled(false);
                     decTimeButton.setEnabled(false);
                     button.setText(getString(R.string.stop));
+                    resetButton.setEnabled(false);
                 }
+            }
+        });
+
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateTimer(lastSetTime);
             }
         });
 
@@ -120,6 +131,7 @@ public class CookTimer extends ActionBarActivity {
         if (savedInstanceState == null)
             timerLabel.setText(Utility.secondsToPrettyTime(cookTime));
         button = (Button) findViewById(R.id.start_stop_button);
+        resetButton = (Button) findViewById(R.id.reset_button);
 
         incTimeButton = (Button) findViewById(R.id.increase_time_button);
         decTimeButton = (Button) findViewById(R.id.decrease_time_button);
