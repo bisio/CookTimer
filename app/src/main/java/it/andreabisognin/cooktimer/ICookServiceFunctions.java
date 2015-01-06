@@ -11,4 +11,5 @@ public interface ICookServiceFunctions {
     void unregisterActivity(Activity activity);
     void startTimer(long seconds);
     void stopTimer();
+    void startAlarm();
 }

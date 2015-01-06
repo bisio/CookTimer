@@ -2,6 +2,7 @@ package it.andreabisognin.cooktimer;
 
 import android.app.Activity;
 import android.app.Service;
+import android.media.MediaPlayer;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.CountDownTimer;
@@ -22,6 +23,7 @@ public class CookService extends Service {
     private final String LOG_TAG="BISIO_SERVICE";
     private boolean timerRunning = false;
     private CountDownTimer timer;
+    protected MediaPlayer mp;
 
 
     @Override
@@ -107,6 +109,12 @@ public class CookService extends Service {
                 Log.i(LOG_TAG,"Timer not running!");
             }
 
+        }
+
+        @Override
+        public void startAlarm() {
+            mp = MediaPlayer.create(getApplicationContext(),R.raw.alarm);
+            mp.start();
         }
     }
 }

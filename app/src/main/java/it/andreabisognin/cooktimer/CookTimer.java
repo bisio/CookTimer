@@ -107,6 +107,7 @@ public class CookTimer extends ActionBarActivity {
             button.setText(getString(R.string.start));
             incTimeButton.setEnabled(true);
             decTimeButton.setEnabled(true);
+            service.startAlarm();
         }
     };
 
