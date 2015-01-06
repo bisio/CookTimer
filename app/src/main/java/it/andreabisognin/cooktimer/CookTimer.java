@@ -54,21 +54,9 @@ public class CookTimer extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (timerRunning) {
-                    Log.i(LOG_TAG,"stopping the timer in service");
-                    service.stopTimer();
-                    timerRunning = false;
-                    button.setText(getString(R.string.start));
-                    incTimeButton.setEnabled(true);
-                    decTimeButton.setEnabled(true);
-                    resetButton.setEnabled(true);
+                    startTimer();
                     } else {
-                    Log.i(LOG_TAG,"starting the timer in service");
-                    service.startTimer(cookTime);
-                    timerRunning = true;
-                    incTimeButton.setEnabled(false);
-                    decTimeButton.setEnabled(false);
-                    button.setText(getString(R.string.stop));
-                    resetButton.setEnabled(false);
+                    stopTimer();
                 }
             }
         });
@@ -96,6 +84,26 @@ public class CookTimer extends ActionBarActivity {
             }
         });
 
+    }
+
+    private void stopTimer() {
+        Log.i(LOG_TAG, "starting the timer in service");
+        service.startTimer(cookTime);
+        timerRunning = true;
+        incTimeButton.setEnabled(false);
+        decTimeButton.setEnabled(false);
+        button.setText(getString(R.string.stop));
+        resetButton.setEnabled(false);
+    }
+
+    private void startTimer() {
+        Log.i(LOG_TAG, "stopping the timer in service");
+        service.stopTimer();
+        timerRunning = false;
+        button.setText(getString(R.string.start));
+        incTimeButton.setEnabled(true);
+        decTimeButton.setEnabled(true);
+        resetButton.setEnabled(true);
     }
 
     private void updateTimer (long time) {
