@@ -54,9 +54,9 @@ public class CookTimer extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 if (timerRunning) {
-                    startTimer();
-                    } else {
                     stopTimer();
+                    } else {
+                    startTimer();
                 }
             }
         });
@@ -94,7 +94,7 @@ public class CookTimer extends ActionBarActivity {
 
     }
 
-    private void stopTimer() {
+    private void startTimer() {
         Log.i(LOG_TAG, "starting the timer in service");
         service.startTimer(cookTime);
         timerRunning = true;
@@ -104,7 +104,7 @@ public class CookTimer extends ActionBarActivity {
         resetButton.setEnabled(false);
     }
 
-    private void startTimer() {
+    private void stopTimer() {
         Log.i(LOG_TAG, "stopping the timer in service");
         service.stopTimer();
         timerRunning = false;
@@ -130,10 +130,12 @@ public class CookTimer extends ActionBarActivity {
         @Override
         public void onFinish() {
             cookTime = 0;
+            timerRunning=false;
             timerLabel.setText(getString(R.string.done));
             button.setText(getString(R.string.start));
             incTimeButton.setEnabled(true);
             decTimeButton.setEnabled(true);
+            resetButton.setEnabled(true);
             service.startAlarm();
         }
     };
