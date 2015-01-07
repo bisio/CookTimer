@@ -1,8 +1,10 @@
 package it.andreabisognin.cooktimer;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -67,6 +69,7 @@ public class CookTimer extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 updateTimer(lastSetTime);
+                service.stopAlarm();
             }
         });
 
@@ -75,6 +78,7 @@ public class CookTimer extends ActionBarActivity {
             public void onClick(View v) {
                 cookTime += TIME_STEP;
                 updateTimer(cookTime);
+                lastSetTime = cookTime;
             }
         });
 
@@ -83,13 +87,14 @@ public class CookTimer extends ActionBarActivity {
             public void onClick(View v) {
                 cookTime = (cookTime - TIME_STEP) > 0? cookTime -TIME_STEP : 0;
                 updateTimer(cookTime);
+                lastSetTime = cookTime;
             }
         });
 
         timerLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(LOG_TAG,"clicked timerLabel!");
+                //Log.i(LOG_TAG,"clicked timerLabel!");
                 service.stopAlarm();
             }
         });
@@ -147,6 +152,9 @@ public class CookTimer extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cook_timer);
 
+        SharedPreferences preferences = getSharedPreferences(getString(R.string.preference_file_key),Context.MODE_PRIVATE);
+        lastSetTime = preferences.getLong(getString(R.string.saved_last_set_time),0);
+
         timerLabel = (TextView) findViewById(R.id.timer_label);
         if (savedInstanceState == null)
             timerLabel.setText(Utility.secondsToPrettyTime(cookTime));
@@ -190,6 +198,15 @@ public class CookTimer extends ActionBarActivity {
         service.unregisterActivity(this);
         unbindService(svcConn);
         Log.i(LOG_TAG,"Service unbound");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putLong(getString(R.string.saved_last_set_time),lastSetTime);
+        editor.commit();
     }
 
     @Override
