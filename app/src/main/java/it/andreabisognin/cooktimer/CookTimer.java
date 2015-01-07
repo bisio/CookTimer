@@ -56,6 +56,8 @@ public class CookTimer extends ActionBarActivity {
                 if (timerRunning) {
                     stopTimer();
                     } else {
+                    if (cookTime == 0)
+                        return;
                     startTimer();
                 }
             }
