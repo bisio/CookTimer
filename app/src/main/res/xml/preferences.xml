@@ -3,7 +3,7 @@
     <EditTextPreference
         android:title="@string/pref_timestep_label"
         android:key="@string/pref_timestep_key"
-        android:defaultValue="@string/pref_timestep_default"
+        android:defaultValue="@integer/pref_timestep_default"
         android:inputType="number"
         android:singleLine="true"/>
 </PreferenceScreen>

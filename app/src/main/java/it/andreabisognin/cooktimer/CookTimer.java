@@ -181,11 +181,10 @@ public class CookTimer extends ActionBarActivity {
             button.setText(getString(R.string.start));
         }
         startService(new Intent(this, CookService.class));
-        bindService(new Intent(this,CookService.class),svcConn,BIND_AUTO_CREATE);
+        bindService(new Intent(this, CookService.class), svcConn, BIND_AUTO_CREATE);
 
         if (savedInstanceState == null) {
             newInstance = true;
-            //timerLabel.setText(Utility.secondsToPrettyTime(cookTime));
         }
     }
 
@@ -205,7 +204,7 @@ public class CookTimer extends ActionBarActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(TIMER_RUNNING,timerRunning);
-        outState.putLong(COOK_TIME,cookTime);
+        outState.putLong(COOK_TIME, cookTime);
         super.onSaveInstanceState(outState);
     }
 
@@ -214,7 +213,7 @@ public class CookTimer extends ActionBarActivity {
         super.onDestroy();
         service.unregisterActivity(this);
         unbindService(svcConn);
-        Log.i(LOG_TAG,"Service unbound");
+        Log.i(LOG_TAG, "Service unbound");
     }
 
     @Override
@@ -222,8 +221,16 @@ public class CookTimer extends ActionBarActivity {
         super.onStop();
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putLong(getString(R.string.saved_last_set_time),lastSetTime);
+        editor.putLong(getString(R.string.saved_last_set_time), lastSetTime);
         editor.commit();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        timeStep  = Long.valueOf(sp.getString(getString(R.string.pref_timestep_key),"10"));
+        Log.i(LOG_TAG,"timeStep is "+timeStep);
     }
 
     @Override
