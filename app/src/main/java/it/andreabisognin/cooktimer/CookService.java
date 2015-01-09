@@ -123,5 +123,10 @@ public class CookService extends Service {
                 mp.stop();
             mp = null;
         }
+
+        @Override
+        public boolean isTimerRunning() {
+            return timerRunning;
+        }
     }
 }

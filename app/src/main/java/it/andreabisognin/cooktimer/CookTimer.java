@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,9 +28,10 @@ public class CookTimer extends ActionBarActivity {
     private final String COOK_TIME = "cook_time";
     private boolean timerRunning = false;
     private final String LOG_TAG = "BISIO";
-    private final long TIME_STEP = 10;
+    private  long timeStep = 10;
     private long cookTime=0;
     private long lastSetTime=0;
+    private boolean newInstance = false;
 
 
     private ServiceConnection svcConn = new ServiceConnection() {
@@ -39,6 +41,7 @@ public class CookTimer extends ActionBarActivity {
             try {
                 service.registerActivity(CookTimer.this,listener);
                 initUIHandlers();
+                initUI();
                 Log.i(LOG_TAG,"Service Bound!");
             } catch (Throwable t) {
                 Log.e(LOG_TAG,"Could not bind service");
@@ -50,6 +53,13 @@ public class CookTimer extends ActionBarActivity {
             service = null;
         }
     };
+
+    private void initUI(){
+        if (!service.isTimerRunning() && newInstance) {
+            cookTime = lastSetTime;
+            updateTimer(cookTime);
+        }
+    }
 
     private void initUIHandlers() {
         button.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +86,7 @@ public class CookTimer extends ActionBarActivity {
         incTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cookTime += TIME_STEP;
+                cookTime += timeStep;
                 updateTimer(cookTime);
                 lastSetTime = cookTime;
             }
@@ -85,7 +95,7 @@ public class CookTimer extends ActionBarActivity {
         decTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cookTime = (cookTime - TIME_STEP) > 0? cookTime -TIME_STEP : 0;
+                cookTime = (cookTime - timeStep) > 0? cookTime - timeStep : 0;
                 updateTimer(cookTime);
                 lastSetTime = cookTime;
             }
@@ -155,9 +165,11 @@ public class CookTimer extends ActionBarActivity {
         SharedPreferences preferences = getSharedPreferences(getString(R.string.preference_file_key),Context.MODE_PRIVATE);
         lastSetTime = preferences.getLong(getString(R.string.saved_last_set_time),0);
 
+
         timerLabel = (TextView) findViewById(R.id.timer_label);
-        if (savedInstanceState == null)
-            timerLabel.setText(Utility.secondsToPrettyTime(cookTime));
+
+
+
         button = (Button) findViewById(R.id.start_stop_button);
         resetButton = (Button) findViewById(R.id.reset_button);
 
@@ -170,6 +182,11 @@ public class CookTimer extends ActionBarActivity {
         }
         startService(new Intent(this, CookService.class));
         bindService(new Intent(this,CookService.class),svcConn,BIND_AUTO_CREATE);
+
+        if (savedInstanceState == null) {
+            newInstance = true;
+            //timerLabel.setText(Utility.secondsToPrettyTime(cookTime));
+        }
     }
 
     @Override
@@ -225,7 +242,7 @@ public class CookTimer extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            startActivity(new Intent(this,CookPrefs.class));
         }
 
         if (id == R.id.action_kill_service) {
