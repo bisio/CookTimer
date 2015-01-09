@@ -228,6 +228,14 @@ public class CookTimer extends ActionBarActivity {
             return true;
         }
 
+        if (id == R.id.action_kill_service) {
+            if (service != null) {
+                stopService(new Intent(this,CookService.class));
+            }
+
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
 }

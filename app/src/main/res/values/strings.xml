@@ -10,4 +10,5 @@
     <string name="reset">reset</string>
     <string name="preference_file_key">it.andreabisognin.cooktimer.PREFERENCES</string>
     <string name="saved_last_set_time">last_set_time</string>
+    <string name="kill_service">Kill Service</string>
 </resources>
