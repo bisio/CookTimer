@@ -13,6 +13,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -80,12 +81,36 @@ public class CookService extends Service {
             callback = null;
         }
 
+
+        private class ThreadTimer extends Thread {
+
+            protected String name;
+            protected long time;
+            protected CountDownTimer timer;
+            private final String LOG_TAG = "BISIO_THREAD";
+            public ThreadTimer(String name, Long seconds) {
+                this.name = name;
+                time = seconds;
+            }
+
+            @Override
+            public void run() {
+                for(int i=0; i< time; i++) {
+                    SystemClock.sleep(1000);
+                    Log.i(LOG_TAG,"ping " + i + "th from " +name);
+                }
+            }
+        }
+
+
         @Override
         public void startTimer(long seconds) {
             if (timerRunning)
                 return;
             timerRunning = true;
-            timer = new CountDownTimer(seconds * 1000, 1000) {
+            ThreadTimer timer = new ThreadTimer("first",seconds);
+            timer.start();
+ /*           timer = new CountDownTimer(seconds * 1000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     if (callback != null)
@@ -101,7 +126,7 @@ public class CookService extends Service {
                     sendNotification();
                 }
             };
-            timer.start();
+            timer.start();*/
 
             Log.i(LOG_TAG, "Started Timer in Service");
         }
