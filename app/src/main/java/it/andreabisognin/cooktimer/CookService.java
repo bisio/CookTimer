@@ -1,14 +1,19 @@
 package it.andreabisognin.cooktimer;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.media.MediaPlayer;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 /**
@@ -85,6 +90,7 @@ public class CookService extends Service {
                 public void onTick(long millisUntilFinished) {
                     if (callback != null)
                         callback.setTimer(millisUntilFinished/1000);
+//                    Log.i(LOG_TAG,"ping!");
                 }
 
                 @Override
@@ -92,6 +98,7 @@ public class CookService extends Service {
                     timerRunning = false;
                     if (callback != null)
                         callback.onFinish();
+                    sendNotification();
                 }
             };
             timer.start();
@@ -128,5 +135,18 @@ public class CookService extends Service {
         public boolean isTimerRunning() {
             return timerRunning;
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void sendNotification() {
+       Notification.Builder  nb = new Notification.Builder(this);
+       nb.setContentTitle(getString(R.string.notification_alarm_title));
+       nb.setContentText(getString(R.string.notification_arlarm_text));
+       nb.setSmallIcon(R.drawable.ic_launcher);
+       nb.setAutoCancel(true);
+       Notification notification = nb.build();
+       NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+       Log.i(LOG_TAG,"sending notification");
+       nm.notify(1,notification);
     }
 }
