@@ -36,7 +36,7 @@ public class CookService extends Service {
         nb.setContentTitle("CookTimer is running...");
         nb.setSmallIcon(R.drawable.ic_launcher);
         Notification notification = nb.build();
-        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,notification);
+        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -97,6 +97,15 @@ public class CookService extends Service {
             timer = new CountDownTimer(seconds * 1000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
+                    if ((millisUntilFinished / 1000)  %  60 == 0) {
+                        NotificationCompat.Builder nb = new NotificationCompat.Builder(CookService.this);
+                        nb.setContentTitle(Utility.secondsToPrettyTime(millisUntilFinished / 1000));
+                        nb.setSmallIcon(R.drawable.ic_launcher);
+                        Notification notification = nb.build();
+                        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        Log.i(LOG_TAG, "sending notification");
+                        nm.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+                    }
 
                     if (callback != null)
                         callback.setTimer(millisUntilFinished/1000);
@@ -107,6 +116,7 @@ public class CookService extends Service {
                     timerRunning = false;
                     if (callback != null)
                         callback.onFinish();
+                    startAlarm();
                     sendNotification();
                 }
             };
