@@ -30,6 +30,15 @@ public class CookService extends Service {
     private CountDownTimer timer;
     protected MediaPlayer mp;
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        NotificationCompat.Builder nb = new NotificationCompat.Builder(this);
+        nb.setContentTitle("CookTimer is running...");
+        nb.setSmallIcon(R.drawable.ic_launcher);
+        Notification notification = nb.build();
+        startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,notification);
+        return super.onStartCommand(intent, flags, startId);
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -88,9 +97,9 @@ public class CookService extends Service {
             timer = new CountDownTimer(seconds * 1000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
+
                     if (callback != null)
                         callback.setTimer(millisUntilFinished/1000);
-//                    Log.i(LOG_TAG,"ping!");
                 }
 
                 @Override
