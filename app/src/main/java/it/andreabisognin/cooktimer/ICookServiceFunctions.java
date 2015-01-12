@@ -14,4 +14,5 @@ public interface ICookServiceFunctions {
     void startAlarm();
     void stopAlarm();
     boolean isTimerRunning();
+    void resetAlarm();
 }

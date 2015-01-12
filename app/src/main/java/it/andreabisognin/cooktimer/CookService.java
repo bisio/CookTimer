@@ -95,16 +95,23 @@ public class CookService extends Service {
                 return;
             timerRunning = true;
             timer = new CountDownTimer(seconds * 1000, 1000) {
+                private boolean firstTime = true;
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    if ((millisUntilFinished / 1000)  %  60 == 0) {
+                    //Log.i(LOG_TAG,"tick");
+
+                    if ((millisUntilFinished / 1000)  %  60 == 0 || firstTime) {
                         NotificationCompat.Builder nb = new NotificationCompat.Builder(CookService.this);
-                        nb.setContentTitle(Utility.secondsToPrettyTime(millisUntilFinished / 1000));
+                        long minutes = millisUntilFinished/(1000*60);
+                        minutes = firstTime? minutes + 1: minutes;
+                        nb.setContentTitle("Less than " + minutes + " minutes left");
                         nb.setSmallIcon(R.drawable.ic_launcher);
                         Notification notification = nb.build();
                         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                         Log.i(LOG_TAG, "sending notification");
                         nm.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+                        if (firstTime)
+                            firstTime = false;
                     }
 
                     if (callback != null)
@@ -154,6 +161,11 @@ public class CookService extends Service {
         public boolean isTimerRunning() {
             return timerRunning;
         }
+
+        @Override
+        public void resetAlarm() {
+
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -166,6 +178,6 @@ public class CookService extends Service {
        Notification notification = nb.build();
        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
        Log.i(LOG_TAG,"sending notification");
-       nm.notify(1,notification);
+       nm.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,notification);
     }
 }
