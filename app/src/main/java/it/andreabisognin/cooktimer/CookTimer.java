@@ -80,6 +80,7 @@ public class CookTimer extends ActionBarActivity {
             public void onClick(View v) {
                 updateTimer(lastSetTime);
                 service.stopAlarm();
+                service.resetAlarm();
             }
         });
 
