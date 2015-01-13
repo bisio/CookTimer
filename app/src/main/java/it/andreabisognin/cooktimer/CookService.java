@@ -10,7 +10,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 /**
@@ -24,12 +23,16 @@ public class CookService extends Service {
     private ICookListenerFunctions callback;
     private final String LOG_TAG="BISIO_SERVICE";
     private boolean timerRunning = false;
+    private String lastmessage = null;
     private CountDownTimer timer;
     protected MediaPlayer mp;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Notification notification = Notifier.buildNotification(this, getString(R.string.notification_running),null,0);
+        String message = getString(R.string.notification_running);
+        if (timerRunning)
+            message = lastmessage;
+        Notification notification = Notifier.buildNotification(this, message,null,0);
         startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
         return super.onStartCommand(intent, flags, startId);
     }
@@ -97,8 +100,9 @@ public class CookService extends Service {
                     if ((millisUntilFinished / 1000)  %  60 == 0 || firstTime) {
                         long minutes = millisUntilFinished/(1000*60);
                         minutes = firstTime? minutes + 1: minutes;
-                        Notifier.notify(CookService.this, "Less than " + minutes + " minutes left",null,0);
-                        Log.i(LOG_TAG, "sending notification");
+                        lastmessage = "Less than " + minutes + " minutes left";
+                        Notifier.notify(CookService.this, lastmessage,null,0);
+                        Log.i(LOG_TAG, "sending 'less than' notification");
                         if (firstTime)
                             firstTime = false;
                     }
@@ -127,6 +131,7 @@ public class CookService extends Service {
                 timer.cancel();
                 timerRunning = false;
                 Log.i(LOG_TAG, "Stopped Timer in Service");
+                resetAlarm();
             } else {
                 Log.i(LOG_TAG,"Timer not running!");
             }
@@ -153,6 +158,7 @@ public class CookService extends Service {
 
         @Override
         public void resetAlarm() {
+            Log.i(LOG_TAG,"resetting notification");
             Notifier.notify(CookService.this,
                     getString(R.string.notification_running),
                     null,

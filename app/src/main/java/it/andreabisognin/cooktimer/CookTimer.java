@@ -59,6 +59,10 @@ public class CookTimer extends ActionBarActivity {
             cookTime = lastSetTime;
             updateTimer(cookTime);
         }
+        if (service.isTimerRunning()) {
+            timerRunning = true;
+            setUITimerStarted();
+        }
     }
 
     private void initUIHandlers() {
@@ -116,6 +120,10 @@ public class CookTimer extends ActionBarActivity {
         Log.i(LOG_TAG, "starting the timer in service");
         service.startTimer(cookTime);
         timerRunning = true;
+        setUITimerStarted();
+    }
+
+    private void setUITimerStarted() {
         incTimeButton.setEnabled(false);
         decTimeButton.setEnabled(false);
         button.setText(getString(R.string.stop));
@@ -176,17 +184,20 @@ public class CookTimer extends ActionBarActivity {
 
         incTimeButton = (Button) findViewById(R.id.increase_time_button);
         decTimeButton = (Button) findViewById(R.id.decrease_time_button);
-        if (timerRunning) {
-            button.setText(getString(R.string.stop));
-        } else {
-            button.setText(getString(R.string.start));
-        }
+
         startService(new Intent(this, CookService.class));
         bindService(new Intent(this, CookService.class), svcConn, BIND_AUTO_CREATE);
+
 
         if (savedInstanceState == null) {
             newInstance = true;
         }
+
+        if (timerRunning)
+            button.setText(R.string.stop);
+        else
+            button.setText(R.string.start);
+
     }
 
     @Override
@@ -232,6 +243,10 @@ public class CookTimer extends ActionBarActivity {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         timeStep  = Long.valueOf(sp.getString(getString(R.string.pref_timestep_key),"10"));
         Log.i(LOG_TAG,"timeStep is "+timeStep);
+        if (service.isTimerRunning()) {
+            Log.i(LOG_TAG, "In restart The timer is running");
+            setUITimerStarted();
+        }
     }
 
     @Override
