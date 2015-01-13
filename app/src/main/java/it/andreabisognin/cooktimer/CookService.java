@@ -176,14 +176,9 @@ public class CookService extends Service {
 
 
     private void sendNotification() {
-       NotificationCompat.Builder  nb = new NotificationCompat.Builder(this);
-       nb.setContentTitle(getString(R.string.notification_alarm_title));
-       nb.setContentText(getString(R.string.notification_arlarm_text));
-       nb.setSmallIcon(R.drawable.ic_launcher);
-       nb.setAutoCancel(true);
-       Notification notification = nb.build();
-       NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-       Log.i(LOG_TAG,"sending notification");
-       nm.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,notification);
+        Notifier.notify(this,
+                getString(R.string.notification_alarm_title),
+                getString(R.string.notification_arlarm_text),
+                0);
     }
 }
