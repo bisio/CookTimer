@@ -164,20 +164,19 @@ public class CookService extends Service {
 
         @Override
         public void resetAlarm() {
-            Notification.Builder  nb = new Notification.Builder(CookService.this);
+            NotificationCompat.Builder  nb = new NotificationCompat.Builder(CookService.this);
             nb.setContentTitle("CookTimer is running...");
             nb.setSmallIcon(R.drawable.ic_launcher);
             Notification notification = nb.build();
             NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             Log.i(LOG_TAG,"sending notification");
             nm.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,notification);
-
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+
     private void sendNotification() {
-       Notification.Builder  nb = new Notification.Builder(this);
+       NotificationCompat.Builder  nb = new NotificationCompat.Builder(this);
        nb.setContentTitle(getString(R.string.notification_alarm_title));
        nb.setContentText(getString(R.string.notification_arlarm_text));
        nb.setSmallIcon(R.drawable.ic_launcher);
