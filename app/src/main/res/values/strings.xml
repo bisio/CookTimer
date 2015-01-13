@@ -15,5 +15,6 @@
     <string name="pref_timestep_key">TIME_STEP</string>
     <string name="notification_alarm_title">Time is now!</string>
     <string name="notification_arlarm_text">Greetings from CookTimer</string>
+    <string name="notification_running">Cooktimer is running...</string>
     <integer name="pref_timestep_default">10</integer>
 </resources>

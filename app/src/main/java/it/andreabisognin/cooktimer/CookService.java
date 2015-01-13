@@ -1,14 +1,11 @@
 package it.andreabisognin.cooktimer;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.media.MediaPlayer;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
@@ -32,10 +29,7 @@ public class CookService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        NotificationCompat.Builder nb = new NotificationCompat.Builder(this);
-        nb.setContentTitle("CookTimer is running...");
-        nb.setSmallIcon(R.drawable.ic_launcher);
-        Notification notification = nb.build();
+        Notification notification = Notifier.buildNotification(this, getString(R.string.notification_running),null,0);
         startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
         return super.onStartCommand(intent, flags, startId);
     }
@@ -101,15 +95,10 @@ public class CookService extends Service {
                     //Log.i(LOG_TAG,"tick");
 
                     if ((millisUntilFinished / 1000)  %  60 == 0 || firstTime) {
-                        NotificationCompat.Builder nb = new NotificationCompat.Builder(CookService.this);
                         long minutes = millisUntilFinished/(1000*60);
                         minutes = firstTime? minutes + 1: minutes;
-                        nb.setContentTitle("Less than " + minutes + " minutes left");
-                        nb.setSmallIcon(R.drawable.ic_launcher);
-                        Notification notification = nb.build();
-                        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        Notifier.notify(CookService.this, "Less than " + minutes + " minutes left",null,0);
                         Log.i(LOG_TAG, "sending notification");
-                        nm.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
                         if (firstTime)
                             firstTime = false;
                     }
@@ -164,13 +153,10 @@ public class CookService extends Service {
 
         @Override
         public void resetAlarm() {
-            NotificationCompat.Builder  nb = new NotificationCompat.Builder(CookService.this);
-            nb.setContentTitle("CookTimer is running...");
-            nb.setSmallIcon(R.drawable.ic_launcher);
-            Notification notification = nb.build();
-            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            Log.i(LOG_TAG,"sending notification");
-            nm.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE,notification);
+            Notifier.notify(CookService.this,
+                    getString(R.string.notification_running),
+                    null,
+                    0);
         }
     }
 
