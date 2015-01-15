@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -198,6 +199,58 @@ public class CookTimer extends ActionBarActivity {
         else
             button.setText(R.string.start);
 
+        bindNumPadButtons();
+/*
+        TextView one = (TextView) findViewById(R.id.button1);
+        one.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cookTime = Long.valueOf(((TextView) v).getText().toString());
+                updateTimer(cookTime);
+            }
+        });
+*/
+
+    }
+
+
+    private static void applyListener(View child, View.OnClickListener listener) {
+        if (child == null)
+            return;
+
+        if (child instanceof ViewGroup) {
+            applyListener((ViewGroup) child, listener);
+        }
+        else if (child != null) {
+               if(child instanceof TextView) {
+                   child.setOnClickListener(listener);
+               }
+         }
+    }
+
+    private static void applyListener(ViewGroup parent, View.OnClickListener listener) {
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            View child = parent.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                applyListener((ViewGroup) child, listener);
+            } else {
+                applyListener(child, listener);
+            }
+        }
+    }
+
+    private void bindNumPadButtons() {
+
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cookTime = Long.valueOf(((TextView) v).getText().toString());
+                updateTimer(cookTime);
+            }
+        };
+        View numpad = findViewById(R.id.numpad);
+
+        applyListener(numpad,listener);
     }
 
     @Override
