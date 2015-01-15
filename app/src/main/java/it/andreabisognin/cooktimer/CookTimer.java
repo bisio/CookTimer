@@ -200,17 +200,6 @@ public class CookTimer extends ActionBarActivity {
             button.setText(R.string.start);
 
         bindNumPadButtons();
-/*
-        TextView one = (TextView) findViewById(R.id.button1);
-        one.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cookTime = Long.valueOf(((TextView) v).getText().toString());
-                updateTimer(cookTime);
-            }
-        });
-*/
-
     }
 
 
