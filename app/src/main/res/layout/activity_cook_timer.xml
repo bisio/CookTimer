@@ -26,14 +26,20 @@
             android:id="@+id/decrease_time_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".5"
+            android:layout_weight="1"
             android:text="-"/>
         <Button
             android:id="@+id/increase_time_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".5"
+            android:layout_weight="1"
             android:text="+"/>
+        <Button
+            android:id="@+id/backspace_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="&lt;"/>
     </LinearLayout>
 
         <TableLayout

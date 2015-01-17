@@ -5,8 +5,10 @@ package it.andreabisognin.cooktimer;
  */
 public class Utility {
     static String  secondsToPrettyTime(long seconds) {
-        long m = seconds / 60;
-        long s = seconds % 60;
-        return String.format("%02d:%02d",m,s);
+        long h = seconds / 3600;
+        long rest = seconds % 3600;
+        long m = rest / 60;
+        long s = rest % 60;
+        return String.format("%01d:%02d:%02d",h,m,s);
     }
 }

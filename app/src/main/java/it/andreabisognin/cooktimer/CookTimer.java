@@ -24,6 +24,8 @@ public class CookTimer extends ActionBarActivity {
     private Button incTimeButton;
     private Button decTimeButton;
     private Button resetButton;
+    private Button backSpaceButton;
+    private View numpad;
     private ICookServiceFunctions service = null;
     private final String TIMER_RUNNING="timer_running";
     private final String COOK_TIME = "cook_time";
@@ -33,6 +35,8 @@ public class CookTimer extends ActionBarActivity {
     private long cookTime=0;
     private long lastSetTime=0;
     private boolean newInstance = false;
+    private NumPadBrains numPadBrains;
+
 
 
     private ServiceConnection svcConn = new ServiceConnection() {
@@ -57,7 +61,7 @@ public class CookTimer extends ActionBarActivity {
 
     private void initUI(){
         if (!service.isTimerRunning() && newInstance) {
-            cookTime = lastSetTime;
+            cookTime = 0;
             updateTimer(cookTime);
         }
         if (service.isTimerRunning()) {
@@ -76,6 +80,8 @@ public class CookTimer extends ActionBarActivity {
                     if (cookTime == 0)
                         return;
                     startTimer();
+                    numpad.setVisibility(View.GONE);
+                    backSpaceButton.setVisibility(View.GONE);
                 }
             }
         });
@@ -83,7 +89,11 @@ public class CookTimer extends ActionBarActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateTimer(lastSetTime);
+                cookTime = 0;
+                updateTimer(cookTime);
+                numPadBrains.clear();
+                numpad.setVisibility(View.VISIBLE);
+                backSpaceButton.setVisibility(View.VISIBLE);
                 service.stopAlarm();
                 service.resetAlarm();
             }
@@ -112,6 +122,15 @@ public class CookTimer extends ActionBarActivity {
             public void onClick(View v) {
                 //Log.i(LOG_TAG,"clicked timerLabel!");
                 service.stopAlarm();
+            }
+        });
+
+        backSpaceButton.setOnClickListener(new View.OnClickListener()   {
+            @Override
+            public void onClick(View v) {
+                numPadBrains.remove();
+                cookTime = numPadBrains.toSeconds();
+                updateTimer(cookTime);
             }
         });
 
@@ -185,9 +204,13 @@ public class CookTimer extends ActionBarActivity {
 
         incTimeButton = (Button) findViewById(R.id.increase_time_button);
         decTimeButton = (Button) findViewById(R.id.decrease_time_button);
+        backSpaceButton = (Button) findViewById(R.id.backspace_button);
+
 
         startService(new Intent(this, CookService.class));
         bindService(new Intent(this, CookService.class), svcConn, BIND_AUTO_CREATE);
+
+
 
 
         if (savedInstanceState == null) {
@@ -199,6 +222,7 @@ public class CookTimer extends ActionBarActivity {
         else
             button.setText(R.string.start);
 
+        numPadBrains = new NumPadBrains();
         bindNumPadButtons();
     }
 
@@ -233,11 +257,13 @@ public class CookTimer extends ActionBarActivity {
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cookTime = Long.valueOf(((TextView) v).getText().toString());
+                int digit = Integer.valueOf(((TextView) v).getText().toString());
+                numPadBrains.add(digit);
+                cookTime = numPadBrains.toSeconds();
                 updateTimer(cookTime);
             }
         };
-        View numpad = findViewById(R.id.numpad);
+        numpad = findViewById(R.id.numpad);
 
         applyListener(numpad,listener);
     }
