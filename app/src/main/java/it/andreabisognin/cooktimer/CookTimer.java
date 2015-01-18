@@ -21,10 +21,8 @@ public class CookTimer extends ActionBarActivity {
 
     private TextView timerLabel;
     private Button button;
-    private Button incTimeButton;
-    private Button decTimeButton;
     private Button resetButton;
-    private Button backSpaceButton;
+    private TextView backSpaceButton;
     private View numpad;
     private ICookServiceFunctions service = null;
     private final String TIMER_RUNNING="timer_running";
@@ -80,8 +78,8 @@ public class CookTimer extends ActionBarActivity {
                     if (cookTime == 0)
                         return;
                     startTimer();
-                    numpad.setVisibility(View.GONE);
-                    backSpaceButton.setVisibility(View.GONE);
+                    numpad.setVisibility(View.INVISIBLE);
+                    backSpaceButton.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -99,25 +97,9 @@ public class CookTimer extends ActionBarActivity {
             }
         });
 
-        incTimeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cookTime += timeStep;
-                updateTimer(cookTime);
-                lastSetTime = cookTime;
-            }
-        });
 
-        decTimeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cookTime = (cookTime - timeStep) > 0? cookTime - timeStep : 0;
-                updateTimer(cookTime);
-                lastSetTime = cookTime;
-            }
-        });
 
-        timerLabel.setOnClickListener(new View.OnClickListener() {
+         timerLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Log.i(LOG_TAG,"clicked timerLabel!");
@@ -144,8 +126,6 @@ public class CookTimer extends ActionBarActivity {
     }
 
     private void setUITimerStarted() {
-        incTimeButton.setEnabled(false);
-        decTimeButton.setEnabled(false);
         button.setText(getString(R.string.stop));
         resetButton.setEnabled(false);
     }
@@ -155,8 +135,6 @@ public class CookTimer extends ActionBarActivity {
         service.stopTimer();
         timerRunning = false;
         button.setText(getString(R.string.start));
-        incTimeButton.setEnabled(true);
-        decTimeButton.setEnabled(true);
         resetButton.setEnabled(true);
     }
 
@@ -179,8 +157,6 @@ public class CookTimer extends ActionBarActivity {
             timerRunning=false;
             timerLabel.setText(getString(R.string.done));
             button.setText(getString(R.string.start));
-            incTimeButton.setEnabled(true);
-            decTimeButton.setEnabled(true);
             resetButton.setEnabled(true);
             //service.startAlarm();
         }
@@ -202,9 +178,9 @@ public class CookTimer extends ActionBarActivity {
         button = (Button) findViewById(R.id.start_stop_button);
         resetButton = (Button) findViewById(R.id.reset_button);
 
-        incTimeButton = (Button) findViewById(R.id.increase_time_button);
-        decTimeButton = (Button) findViewById(R.id.decrease_time_button);
-        backSpaceButton = (Button) findViewById(R.id.backspace_button);
+       // incTimeButton = (Button) findViewById(R.id.increase_time_button);
+       //decTimeButton = (Button) findViewById(R.id.decrease_time_button);
+        backSpaceButton = (TextView) findViewById(R.id.backspace_button);
 
 
         startService(new Intent(this, CookService.class));
@@ -274,8 +250,6 @@ public class CookTimer extends ActionBarActivity {
         cookTime = savedInstanceState.getLong(COOK_TIME);
         if (timerRunning) {
             button.setText(R.string.stop);
-            incTimeButton.setEnabled(false);
-            decTimeButton.setEnabled(false);
         }
         updateTimer(cookTime);
         super.onRestoreInstanceState(savedInstanceState);
